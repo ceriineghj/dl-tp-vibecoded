@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- 
+        =============================================
+        ROCK PAPER SCISSORS GAME - HTML FILE
+        =============================================
+        This file contains all the HTML structure for the game.
+        It defines 5 main screens:
+        1. Loading Screen - Shows when game first loads
+        2. Start Screen - Main menu with buttons
+        3. Game Screen - Where player makes their choice
+        4. Result Screen - Shows round outcome
+        5. Game Over Screen - Final scores modal
+        
+        Author: Created with Lovable
+        =============================================
+    -->
+    <meta charset="UTF-8">
+    
+    <!-- Viewport meta tag for responsive design on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Page title shown in browser tab -->
+    <title>Rock Paper Scissors - The Ultimate Duel</title>
+    
+    <!-- Link to our external CSS stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Import Google Fonts for gaming aesthetic -->
+    <!-- Orbitron: Bold display font for titles -->
+    <!-- Rajdhani: Clean font for body text -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 
+        =============================================
+        SCREEN 1: LOADING SCREEN
+        =============================================
+        This screen appears when the game first loads.
+        Contains an animated circular loader and progress bar.
+    -->
+    <div id="loading-screen" class="screen active">
+        <!-- Container for centering all content vertically and horizontally -->
+        <div class="loading-container">
+            
+            <!-- Animated circular loading indicator -->
+            <div class="loading-circle">
+                <!-- SVG circle that animates to show loading progress -->
+                <svg viewBox="0 0 100 100">
+                    <!-- Background circle (dark, static) -->
+                    <circle 
+                        class="circle-bg" 
+                        cx="50" 
+                        cy="50" 
+                        r="40"
+                    ></circle>
+                    <!-- Foreground circle (gradient, animated) -->
+                    <circle 
+                        id="loading-circle-progress"
+                        class="circle-progress" 
+                        cx="50" 
+                        cy="50" 
+                        r="40"
+                    ></circle>
+                </svg>
+            </div>
+            
+            <!-- Loading text label -->
+            <h2 class="loading-text">LOADING</h2>
+            
+            <!-- Progress bar container -->
+            <div class="progress-bar-container">
+                <!-- The actual progress bar that fills from left to right -->
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            
+            <!-- Percentage text display -->
+            <p id="progress-text" class="progress-text">0%</p>
+        </div>
+        
+        <!-- Credit text at bottom of screen -->
+        <p class="credit-text">LOVABLE</p>
+    </div>
+
+    <!-- 
+        =============================================
+        SCREEN 2: START SCREEN (Main Menu)
+        =============================================
+        This is the main menu where players can:
+        - Start a new game
+        - View the rules
+        - Access settings
+    -->
+    <div id="start-screen" class="screen">
+        <!-- Game title container with stacked typography effect -->
+        <div class="title-container">
+            <!-- ROCK - Outlined text style (transparent with stroke) -->
+            <h1 class="game-title title-outline">ROCK</h1>
+            <!-- PAPER - Filled with hot pink color and glow effect -->
+            <h1 class="game-title title-fill">PAPER</h1>
+            <!-- SCISSORS - Outlined text style -->
+            <h1 class="game-title title-outline">SCISSORS</h1>
+            <!-- Tagline below the main title -->
+            <p class="tagline">THE ULTIMATE DUEL</p>
+        </div>
+
+        <!-- Buttons container -->
+        <div class="menu-buttons">
+            <!-- Primary action button - starts the game -->
+            <button id="start-game-btn" class="btn btn-primary">START GAME</button>
+            
+            <!-- Secondary buttons row -->
+            <div class="secondary-buttons">
+                <!-- Opens the rules modal -->
+                <button id="rules-btn" class="btn btn-outline">RULES</button>
+                <!-- Opens the settings modal -->
+                <button id="settings-btn" class="btn btn-outline">SETTINGS</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 
+        =============================================
+        SCREEN 3: GAME SCREEN (Gameplay)
+        =============================================
+        This is where the actual gameplay happens.
+        Players select Rock, Paper, or Scissors before time runs out.
+    -->
+    <div id="game-screen" class="screen">
+        <!-- Header with scores and timer -->
+        <header class="game-header">
+            <!-- Player score display (left side) -->
+            <div class="score-display">
+                <p class="score-label">PLAYER</p>
+                <p id="player-score" class="score-value">00</p>
+            </div>
+            
+            <!-- Countdown timer (center) -->
+            <div class="timer-container">
+                <div id="timer" class="timer">10</div>
+            </div>
+            
+            <!-- AI score display (right side) -->
+            <div class="score-display">
+                <p class="score-label">SPLAT</p>
+                <p id="ai-score" class="score-value">00</p>
+            </div>
+        </header>
+
+        <!-- Main game area with choice cards -->
+        <main class="game-main">
+            <!-- Container for the three choice cards -->
+            <div class="choices-container">
+                <!-- Rock choice card -->
+                <button class="choice-card" data-choice="rock">
+                    <!-- Hand emoji icon for Rock -->
+                    <span class="choice-icon">✊</span>
+                    <span class="choice-label">ROCK</span>
+                </button>
+                
+                <!-- Paper choice card (highlighted by default in design) -->
+                <button class="choice-card highlighted" data-choice="paper">
+                    <!-- Hand emoji icon for Paper -->
+                    <span class="choice-icon">🖐️</span>
+                    <span class="choice-label">PAPER</span>
+                </button>
+                
+                <!-- Scissors choice card -->
+                <button class="choice-card" data-choice="scissors">
+                    <!-- Hand emoji icon for Scissors -->
+                    <span class="choice-icon">✌️</span>
+                    <span class="choice-label">SCISSORS</span>
+                </button>
+            </div>
+            
+            <!-- Instruction text below cards -->
+            <p class="instruction-text">CHOOSE YOUR WEAPON</p>
+        </main>
+    </div>
+
+    <!-- 
+        =============================================
+        SCREEN 4: RESULT SCREEN
+        =============================================
+        Shows the outcome of each round:
+        - "YOU WIN!" with sparkle effects
+        - "YOU LOSE!" in red
+        - "IT'S A TIE!" in yellow
+    -->
+    <div id="result-screen" class="screen">
+        <!-- Sparkle effects container (only visible on win) -->
+        <div id="sparkles-container" class="sparkles-container">
+            <div class="sparkle" style="top: 20%; left: 15%;"></div>
+            <div class="sparkle" style="top: 25%; left: 80%;"></div>
+            <div class="sparkle" style="top: 15%; left: 50%;"></div>
+            <div class="sparkle" style="top: 35%; left: 25%;"></div>
+            <div class="sparkle" style="top: 30%; left: 70%;"></div>
+        </div>
+
+              <!-- Result title (changes based on outcome) -->
+        <h1 id="result-title" class="result-title">YOU WIN!</h1>
+        
+        <!-- Description of what beat what -->
+        <p id="result-message" class="result-message">PAPER BEATS ROCK</p>
+
+        <!-- Visual comparison of choices -->
+        <div class="choices-comparison">
+            <!-- Player's choice display -->
+            <div class="choice-display">
+                <div class="choice-box">
+                    <span id="player-choice-icon" class="choice-icon">🖐️</span>
+                </div>
+                <span class="choice-owner">YOU</span>
+            </div>
+            
+            <!-- VS separator -->
+            <span class="vs-text">VS</span>
+            
+            <!-- AI's choice display -->
+            <div class="choice-display">
+                <div class="choice-box">
+                    <span id="ai-choice-icon" class="choice-icon">✊</span>
+                </div>
+                <span class="choice-owner">AI</span>
+            </div>
+        </div>
+
+        <!-- Button to continue to next round -->
+        <button id="next-round-btn" class="btn btn-primary">NEXT ROUND</button>
+    </div>
+
+    <!-- 
+        =============================================
+        SCREEN 5: GAME OVER MODAL
+        =============================================
+        Appears as an overlay when someone reaches the winning score.
+        Shows final scores and options to play again or exit.
+    -->
+    <div id="game-over-screen" class="screen modal-overlay">
+        <div class="modal-card">
+            <!-- Modal title -->
+            <h2 class="modal-title">GAME OVER</h2>
+            
+            <!-- Final scores display -->
+            <div class="final-scores">
+                <!-- Player's final score -->
+                <div class="final-score-item">
+                    <p id="final-player-score" class="final-score-value">5</p>
+                    <p class="final-score-label">YOUR SCORE</p>
+                </div>
+                
+                <!-- AI's final score -->
+                <div class="final-score-item">
+                    <p id="final-ai-score" class="final-score-value">2</p>
+                    <p class="final-score-label">AI SCORE</p>
+                </div>
+            </div>
+            
+            <!-- Total points earned display -->
+            <div class="total-points-container">
+                <p id="total-points" class="total-points-value">2,500</p>
+                <p class="total-points-label">TOTAL POINTS</p>
+            </div>
+            
+            <!-- Action buttons -->
+            <div class="modal-buttons">
+                <button id="play-again-btn" class="btn btn-primary">PLAY AGAIN</button>
+                <button id="exit-btn" class="btn btn-outline">EXIT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 
+        =============================================
+        RULES MODAL
+        =============================================
+        Explains how the game works.
+        Can be opened from the start screen.
+    -->
+    <div id="rules-modal" class="screen modal-overlay">
+        <div class="modal-card modal-small">
+            <!-- Close button (X) in top right corner -->
+            <button id="rules-close-btn" class="modal-close-btn">✕</button>
+            
+            <!-- Modal title -->
+            <h2 class="modal-title">RULES</h2>
+            
+            <!-- List of game rules -->
+            <div class="rules-list">
+                <!-- Rule 1: Rock beats Scissors -->
+                <div class="rule-item">
+                    <span class="rule-emoji">✊</span>
+                    <span class="rule-text"><span class="highlight">ROCK</span> beats <span class="muted">SCISSORS</span></span>
+                </div>
+                <!-- Rule 2: Paper beats Rock -->
+                <div class="rule-item">
+                    <span class="rule-emoji">🖐️</span>
+                    <span class="rule-text"><span class="highlight">PAPER</span> beats <span class="muted">ROCK</span></span>
+                </div>
+                <!-- Rule 3: Scissors beats Paper -->
+                <div class="rule-item">
+                    <span class="rule-emoji">✌️</span>
+                    <span class="rule-text"><span class="highlight">SCISSORS</span> beats <span class="muted">PAPER</span></span>
+                </div>
+            </div>
+            
+            <!-- How to play section -->
+            <div class="how-to-play">
+                <h3 class="section-title">HOW TO PLAY</h3>
+                <ul class="instructions-list">
+                    <li>Select your choice before the timer runs out</li>
+                    <li>Win rounds to score points</li>
+                    <li>First to reach 5 points wins the game</li>
+                </ul>
+            </div>
+            
+            <!-- Close button -->
+            <button id="rules-got-it-btn" class="btn btn-outline full-width">GOT IT</button>
+        </div>
+    </div>
+
+    <!-- 
+        =============================================
+        SETTINGS MODAL
+        =============================================
+        Allows players to customize game settings:
+        - Sound on/off
+        - Timer duration
+        - Winning score
+    -->
+    <div id="settings-modal" class="screen modal-overlay">
+        <div class="modal-card modal-small">
+            <!-- Close button (X) in top right corner -->
+            <button id="settings-close-btn" class="modal-close-btn">✕</button>
+            
+            <!-- Modal title -->
+            <h2 class="modal-title">SETTINGS</h2>
+            
+            <!-- Settings options -->
+            <div class="settings-list">
+                <!-- Sound toggle setting -->
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <span id="sound-icon" class="setting-icon">🔊</span>
+                        <span>Sound</span>
+                    </div>
+                    <!-- Custom toggle switch -->
+                    <button id="sound-toggle" class="toggle-switch active">
+                        <div class="toggle-knob"></div>
+                    </button>
+                </div>
+                
+                <!-- Timer duration setting -->
+                <div class="setting-group">
+                    <div class="setting-label">
+                        <span class="setting-icon">⏱️</span>
+                        <span>Timer (seconds)</span>
+                    </div>
+                    <!-- Option buttons for timer duration -->
+                    <div class="option-buttons" id="timer-options">
+                        <button class="option-btn" data-value="5">5</button>
+                        <button class="option-btn active" data-value="10">10</button>
+                        <button class="option-btn" data-value="15">15</button>
+                        <button class="option-btn" data-value="20">20</button>
+                    </div>
+                </div>
+                
+                <!-- Winning score setting -->
+                <div class="setting-group">
+                    <div class="setting-label">
+                        <span class="setting-icon">🏆</span>
+                        <span>Win at score</span>
+                    </div>
+                    <!-- Option buttons for winning score -->
+                    <div class="option-buttons" id="score-options">
+                        <button class="option-btn" data-value="3">3</button>
+                        <button class="option-btn active" data-value="5">5</button>
+                        <button class="option-btn" data-value="7">7</button>
+                        <button class="option-btn" data-value="10">10</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Save button -->
+            <button id="settings-save-btn" class="btn btn-primary full-width">SAVE</button>
+        </div>
+    </div>
+
+    <!-- Link to our external JavaScript file -->
+    <!-- The 'defer' attribute ensures the script runs after HTML is parsed -->
+    <script src="script.js" defer></script>
+</body>
+</html>
+  
