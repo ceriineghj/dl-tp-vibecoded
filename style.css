@@ -1,0 +1,1028 @@
+/*
+=============================================
+ROCK PAPER SCISSORS GAME - CSS STYLESHEET
+=============================================
+This file contains all the styling for the game.
+Organized into sections:
+1. CSS Variables (Color Palette)
+2. Reset & Base Styles
+3. Typography
+4. Layout & Screens
+5. Components (Buttons, Cards, etc.)
+6. Animations
+7. Responsive Design
+
+Author: Created with Lovable
+=============================================
+*/
+
+/* 
+=============================================
+SECTION 1: CSS VARIABLES (Design Tokens)
+=============================================
+All colors and reusable values are defined here.
+This makes it easy to change the entire color scheme in one place.
+*/
+:root {
+    /* Primary Colors */
+    --color-background: #1a0a14;        /* Dark maroon - main background */
+    --color-background-light: #2a1520;  /* Slightly lighter maroon */
+    --color-card: #251218;              /* Card/surface background */
+    --color-primary: #ff2d7a;           /* Hot pink - primary accent */
+    --color-primary-glow: rgba(255, 45, 122, 0.5); /* Pink glow effect */
+    --color-accent: #ffd93d;            /* Yellow - secondary accent */
+    
+    /* Text Colors */
+    --color-text: #f5e6eb;              /* Light pink-white for text */
+    --color-text-muted: #6b5a60;        /* Muted/secondary text */
+    
+    /* UI Colors */
+    --color-border: #3a2530;            /* Border color */
+    --color-success: #4ade80;           /* Green for wins */
+    --color-error: #ef4444;             /* Red for losses */
+    
+    /* Typography */
+    --font-display: 'Orbitron', monospace;  /* Bold gaming font for titles */
+    --font-body: 'Rajdhani', sans-serif;    /* Clean font for body text */
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;   /* 4px */
+    --spacing-sm: 0.5rem;    /* 8px */
+    --spacing-md: 1rem;      /* 16px */
+    --spacing-lg: 1.5rem;    /* 24px */
+    --spacing-xl: 2rem;      /* 32px */
+    --spacing-xxl: 3rem;     /* 48px */
+    
+    /* Border Radius */
+    --radius-sm: 0.5rem;     /* 8px */
+    --radius-md: 0.75rem;    /* 12px */
+    --radius-lg: 1rem;       /* 16px */
+    --radius-full: 9999px;   /* Full rounded (circles) */
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* 
+=============================================
+SECTION 2: RESET & BASE STYLES
+=============================================
+Removes default browser styling and sets base styles.
+*/
+
+/* Reset all elements to use border-box sizing */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Base HTML and body styles */
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+/* Remove default button styles */
+button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* Remove default list styles */
+ul, ol {
+    list-style: none;
+}
+
+/* 
+=============================================
+SECTION 3: TYPOGRAPHY
+=============================================
+Styles for headings, text, and fonts.
+*/
+
+/* Game title styling - used on start screen */
+.game-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    line-height: 0.9;
+    margin: 0;
+}
+
+/* Outlined text effect (transparent with stroke) */
+.title-outline {
+    -webkit-text-stroke: 2px var(--color-text);
+    color: transparent;
+}
+
+/* Filled text with glow effect */
+.title-fill {
+    color: var(--color-primary);
+    text-shadow: 0 0 30px var(--color-primary-glow);
+}
+
+/* Tagline below main title */
+.tagline {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    margin-top: var(--spacing-md);
+}
+
+/* 
+=============================================
+SECTION 4: LAYOUT & SCREENS
+=============================================
+Screen containers and layout utilities.
+*/
+
+/* Base screen styling - all screens share these styles */
+.screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;                  /* Hidden by default */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-background);
+}
+
+/* Active screen is visible */
+.screen.active {
+    display: flex;
+}
+
+/* Modal overlay - semi-transparent background */
+.modal-overlay {
+    background-color: rgba(26, 10, 20, 0.9);
+    backdrop-filter: blur(4px);
+}
+
+/* 
+=============================================
+LOADING SCREEN STYLES
+=============================================
+*/
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Circular loading indicator */
+.loading-circle {
+    width: 120px;
+    height: 120px;
+    margin-bottom: var(--spacing-xl);
+}
+
+.loading-circle svg {
+    width: 100%;
+    height: 100%;
+    animation: spin 3s linear infinite;
+}
+
+/* Background circle (dark, static) */
+.circle-bg {
+    fill: none;
+    stroke: var(--color-border);
+    stroke-width: 4;
+}
+
+/* Progress circle (gradient, animated) */
+.circle-progress {
+    fill: none;
+    stroke: url(#loadingGradient);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 251.2;           /* Circumference of circle (2 * PI * 40) */
+    stroke-dashoffset: 251.2;          /* Start fully hidden */
+    transform-origin: center;
+    transform: rotate(-90deg);         /* Start from top */
+    transition: stroke-dashoffset 0.1s linear;
+}
+
+/* Gradient for loading circle - defined inline in SVG */
+.loading-circle svg defs {
+    display: block;
+}
+
+/* Loading text */
+.loading-text {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 0.2em;
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Progress bar container */
+.progress-bar-container {
+    width: 250px;
+    height: 6px;
+    background-color: var(--color-border);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+/* Progress bar fill */
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent), var(--color-primary));
+    background-size: 200% 100%;
+    border-radius: var(--radius-full);
+    animation: shimmer 2s infinite;
+    transition: width 0.1s linear;
+}
+
+/* Progress percentage text */
+.progress-text {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    margin-top: var(--spacing-md);
+}
+
+/* Credit text at bottom */
+.credit-text {
+    position: absolute;
+    bottom: var(--spacing-xl);
+    color: rgba(107, 90, 96, 0.5);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+}
+
+/* 
+=============================================
+START SCREEN STYLES
+=============================================
+*/
+
+.title-container {
+    text-align: center;
+    margin-bottom: var(--spacing-xxl);
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.secondary-buttons {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-sm);
+}
+
+/* 
+=============================================
+SECTION 5: COMPONENTS
+=============================================
+Reusable UI components like buttons and cards.
+*/
+
+/* Base button styles */
+.btn {
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-normal);
+}
+
+/* Primary button - hot pink with glow */
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+    box-shadow: 0 0 20px var(--color-primary-glow);
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px var(--color-primary-glow);
+}
+
+.btn-primary:active {
+    transform: scale(0.95);
+}
+
+/* Outline button - bordered with hover glow */
+.btn-outline {
+    background-color: transparent;
+    color: var(--color-text);
+    border: 2px solid rgba(245, 230, 235, 0.5);
+}
+
+.btn-outline:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    box-shadow: 0 0 15px rgba(255, 45, 122, 0.3);
+}
+
+.btn-outline:active {
+    transform: scale(0.95);
+}
+
+/* Full width button modifier */
+.full-width {
+    width: 100%;
+}
+
+/* 
+=============================================
+GAME SCREEN STYLES
+=============================================
+*/
+
+#game-screen {
+    justify-content: flex-start;
+}
+
+/* Game header with scores and timer */
+.game-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+/* Score display (player and AI) */
+.score-display {
+    text-align: center;
+}
+
+.score-label {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--spacing-xs);
+}
+
+.score-value {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+/* Timer container */
+.timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.timer {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    box-shadow: 0 0 20px var(--color-primary-glow);
+}
+
+/* Timer warning state - pulses when time is low */
+.timer.warning {
+    animation: pulse 1s infinite;
+}
+
+/* Main game area */
+.game-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl);
+}
+
+/* Choice cards container */
+.choices-container {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Individual choice card */
+.choice-card {
+    width: 100px;
+    height: 130px;
+    background-color: var(--color-card);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    transition: all var(--transition-normal);
+    cursor: pointer;
+}
+
+/* Choice card hover effect */
+.choice-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-4px);
+    box-shadow: 0 0 20px rgba(255, 45, 122, 0.3);
+}
+
+/* Highlighted choice card (paper in design) */
+.choice-card.highlighted {
+    border-color: var(--color-primary);
+    background-color: rgba(255, 45, 122, 0.1);
+}
+
+/* Selected choice card */
+.choice-card.selected {
+    border-color: var(--color-primary);
+    background-color: rgba(255, 45, 122, 0.2);
+    box-shadow: 0 0 30px var(--color-primary-glow);
+}
+
+/* Disabled/unselected cards when one is chosen */
+.choice-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Choice icon (emoji) */
+.choice-icon {
+    font-size: 2rem;
+}
+
+/* Choice label text */
+.choice-label {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    color: var(--color-text);
+}
+
+/* Instruction text */
+.instruction-text {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+}
+
+/* 
+=============================================
+RESULT SCREEN STYLES
+=============================================
+*/
+
+/* Sparkles container */
+.sparkles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+.sparkles-container.active {
+    opacity: 1;
+}
+
+/* Individual sparkle */
+.sparkle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-full);
+    animation: sparkle 1.5s ease-in-out infinite;
+}
+
+/* Stagger sparkle animations */
+.sparkle:nth-child(2) { animation-delay: 0.3s; }
+.sparkle:nth-child(3) { animation-delay: 0.6s; }
+.sparkle:nth-child(4) { animation-delay: 0.9s; }
+.sparkle:nth-child(5) { animation-delay: 1.2s; }
+
+/* Result title */
+.result-title {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--spacing-md);
+    animation: scaleUp 0.3s ease-out;
+}
+
+/* Win state title */
+.result-title.win {
+    color: var(--color-primary);
+    text-shadow: 0 0 30px var(--color-primary-glow);
+}
+
+/* Lose state title */
+.result-title.lose {
+    color: var(--color-error);
+}
+
+/* Tie state title */
+.result-title.tie {
+    color: var(--color-accent);
+}
+
+/* Result message */
+.result-message {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    letter-spacing: 0.2em;
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Choices comparison container */
+.choices-comparison {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xxl);
+}
+
+/* Individual choice display */
+.choice-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+/* Choice box containing the icon */
+.choice-box {
+    width: 60px;
+    height: 60px;
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Choice owner label */
+.choice-owner {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+/* VS text between choices */
+.vs-text {
+    font-family: var(--font-display);
+    color: var(--color-text-muted);
+    font-size: 1rem;
+}
+
+/* 
+=============================================
+GAME OVER MODAL STYLES
+=============================================
+*/
+
+/* Modal card container */
+.modal-card {
+    background-color: var(--color-card);
+    border: 2px solid rgba(255, 45, 122, 0.3);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    width: 320px;
+    max-width: 90vw;
+    animation: scaleUp 0.3s ease-out;
+    position: relative;
+}
+
+/* Smaller modal variant */
+.modal-small {
+    width: 300px;
+}
+
+/* Modal title */
+.modal-title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    text-align: center;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Close button for modals */
+.modal-close-btn {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    color: var(--color-text-muted);
+    font-size: 1.25rem;
+    transition: color var(--transition-fast);
+}
+
+.modal-close-btn:hover {
+    color: var(--color-text);
+}
+
+/* Final scores container */
+.final-scores {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-xxl);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Individual final score item */
+.final-score-item {
+    text-align: center;
+}
+
+.final-score-value {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.final-score-value.winner {
+    color: var(--color-primary);
+}
+
+.final-score-label {
+    color: var(--color-text-muted);
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    margin-top: var(--spacing-xs);
+}
+
+/* Total points container */
+.total-points-container {
+    background-color: rgba(255, 45, 122, 0.2);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.total-points-value {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--color-accent);
+}
+
+.total-points-label {
+    color: var(--color-text-muted);
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    margin-top: var(--spacing-xs);
+}
+
+/* Modal buttons container */
+.modal-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.modal-buttons .btn {
+    flex: 1;
+}
+
+.modal-buttons .btn-outline {
+    flex: 0 0 auto;
+    padding-left: var(--spacing-lg);
+    padding-right: var(--spacing-lg);
+}
+
+/* 
+=============================================
+RULES MODAL STYLES
+=============================================
+*/
+
+.rules-list {
+    margin-bottom: var(--spacing-lg);
+}
+
+.rule-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) 0;
+}
+
+.rule-emoji {
+    font-size: 1.5rem;
+}
+
+.rule-text {
+    font-size: 0.875rem;
+}
+
+.rule-text .highlight {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.rule-text .muted {
+    color: var(--color-text-muted);
+}
+
+.how-to-play {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.1em;
+    margin-bottom: var(--spacing-sm);
+}
+
+.instructions-list {
+    font-size: 0.875rem;
+}
+
+.instructions-list li {
+    padding: var(--spacing-xs) 0;
+}
+
+.instructions-list li::before {
+    content: "• ";
+    color: var(--color-primary);
+}
+
+/* 
+=============================================
+SETTINGS MODAL STYLES
+=============================================
+*/
+
+.settings-list {
+    margin-bottom: var(--spacing-lg);
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+}
+
+.setting-group {
+    padding: var(--spacing-md) 0;
+}
+
+.setting-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 0.875rem;
+}
+
+.setting-icon {
+    font-size: 1.25rem;
+}
+
+/* Toggle switch */
+.toggle-switch {
+    width: 48px;
+    height: 24px;
+    background-color: var(--color-border);
+    border-radius: var(--radius-full);
+    position: relative;
+    transition: background-color var(--transition-fast);
+}
+
+.toggle-switch.active {
+    background-color: var(--color-primary);
+}
+
+.toggle-knob {
+    width: 20px;
+    height: 20px;
+    background-color: var(--color-text);
+    border-radius: var(--radius-full);
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform var(--transition-fast);
+}
+
+.toggle-switch.active .toggle-knob {
+    transform: translateX(24px);
+}
+
+/* Option buttons */
+.option-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+}
+
+.option-btn {
+    flex: 1;
+    padding: var(--spacing-sm);
+    background-color: var(--color-border);
+    color: var(--color-text-muted);
+    border-radius: var(--radius-md);
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    transition: all var(--transition-fast);
+}
+
+.option-btn:hover {
+    background-color: var(--color-background-light);
+}
+
+.option-btn.active {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+/* 
+=============================================
+SECTION 6: ANIMATIONS
+=============================================
+Keyframe animations used throughout the game.
+*/
+
+/* Spinning animation for loading circle */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Shimmer effect for progress bar */
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Scale up animation for modals and results */
+@keyframes scaleUp {
+    0% { 
+        opacity: 0; 
+        transform: scale(0.8); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: scale(1); 
+    }
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+    0% { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* Pulse animation for timer warning */
+@keyframes pulse {
+    0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 0 20px var(--color-primary-glow);
+    }
+    50% { 
+        transform: scale(1.1); 
+        box-shadow: 0 0 40px var(--color-primary-glow);
+    }
+}
+
+/* Sparkle animation */
+@keyframes sparkle {
+    0%, 100% { 
+        opacity: 0; 
+        transform: scale(0); 
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1); 
+    }
+}
+
+/* Bounce animation for buttons */
+@keyframes bounce {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Animation utility classes */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-scale-up {
+    animation: scaleUp 0.3s ease-out forwards;
+}
+
+.animate-bounce {
+    animation: bounce 0.4s ease-out forwards;
+}
+
+/* 
+=============================================
+SECTION 7: RESPONSIVE DESIGN
+=============================================
+Adjustments for different screen sizes.
+*/
+
+/* Tablets and larger phones */
+@media (min-width: 640px) {
+    .game-title {
+        font-size: 4.5rem;
+    }
+    
+    .choice-card {
+        width: 130px;
+        height: 160px;
+    }
+    
+    .choice-icon {
+        font-size: 2.5rem;
+    }
+    
+    .result-title {
+        font-size: 4rem;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+    .game-title {
+        font-size: 5rem;
+    }
+    
+    .choices-container {
+        gap: var(--spacing-xl);
+    }
+    
+    .choice-card {
+        width: 150px;
+        height: 180px;
+    }
+    
+    .choice-icon {
+        font-size: 3rem;
+    }
+}
+
+/* Small phones */
+@media (max-width: 380px) {
+    .game-title {
+        font-size: 2.25rem;
+    }
+    
+    .choice-card {
+        width: 80px;
+        height: 110px;
+    }
+    
+    .choices-container {
+        gap: var(--spacing-sm);
+    }
+    
+    .btn {
+        padding: var(--spacing-sm) var(--spacing-lg);
+        font-size: 0.75rem;
+    }
+}
